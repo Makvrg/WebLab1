@@ -4,16 +4,18 @@ export class Student {
     fio;
     stGroup;
     dormitoryNumber;
+    room;
     dateOfPlacement;
     isNotRussian;
     notes;
 
-    constructor(isuId, fio, group, dormitoryNumber,
+    constructor(isuId, fio, stGroup, dormitoryNumber, room,
                 dateOfPlacement, isNotRussian, notes) {
         this.isuId = isuId;
         this.fio = fio;
-        this.stGroup = group;
+        this.stGroup = stGroup;
         this.dormitoryNumber = dormitoryNumber;
+        this.room = room;
         this.dateOfPlacement = dateOfPlacement;
         this.isNotRussian = isNotRussian;
         this.notes = notes;
@@ -27,6 +29,7 @@ export class Student {
         rawData.fio,
         rawData.stGroup,
         rawData.dormitoryNumber,
+        rawData.room,
         rawData.dateOfPlacement,
         rawData.isNotRussian,
         rawData.notes
@@ -37,8 +40,9 @@ export class Student {
         return {
             isuId: this.isuId,
             fio: this.fio,
-            group: this.stGroup,
+            stGroup: this.stGroup,
             dormitoryNumber: this.dormitoryNumber,
+            room: this.room,
             dateOfPlacement: this.dateOfPlacement,
             isNotRussian: this.isNotRussian,
             notes: this.notes

@@ -1,7 +1,10 @@
-// js/view/TableView.js
 export class TableView {
+
+    tbody;
+    onDeleteCallback;
+
     /**
-     * @param {string} tbodySelector 
+     * @param {string} tbodySelector Селектор tbody для работы со строками таблицы
      * @param {Function} onDeleteCallback (isuId: string|number) => void
      */
     constructor(tbodySelector, onDeleteCallback) {
@@ -18,7 +21,8 @@ export class TableView {
         this.tbody.innerHTML = "";
 
         if (students.length === 0) {
-            this.tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Студентов пока нет</td></tr>`;
+            this.tbody.innerHTML =
+                `<tr><td colspan="6" style="text-align: center;">Студентов пока нет</td></tr>`;
             return;
         }
 
@@ -26,29 +30,45 @@ export class TableView {
             const tr = document.createElement("tr");
             tr.dataset.isuId = student.isuId;
 
-            tr.innerHTML = `
-                <td>${student.isuId}</td>
-                <td>${student.fio}</td>
-                <td>${student.stGroup}</td>
-                <td>${student.dormitoryNumber}</td>
-                <td class="actions">
-                    <a href="student.html?id=${student.isuId}" class="btn btn-small">Просмотр</a>
-                    <a href="form.html?id=${student.isuId}" class="btn btn-small btn-primary">Изменить</a>
-                    <button class="btn btn-small btn-danger btn-delete">Удалить</button>
-                </td>
+            const fields = [
+                student.isuId,
+                student.fio,
+                student.stGroup,
+                student.dormitoryNumber,
+                student.room
+            ];
+
+            fields.forEach(value => {
+                const td = document.createElement("td");
+                td.textContent = value ?? "";
+                tr.appendChild(td);
+            });
+
+            const actionsTd = document.createElement("td");
+            actionsTd.className = "actions";
+
+            const safeIsuId = encodeURIComponent(student.isuId);
+
+            actionsTd.innerHTML = `
+                <a href="student.html?id=${safeIsuId}" class="btn btn-small">Просмотр</a>
+                <a href="form.html?id=${safeIsuId}" class="btn btn-small btn-primary">Изменить</a>
+                <button class="btn btn-small btn-danger btn-delete">Удалить</button>
             `;
+
+            tr.appendChild(actionsTd);
             this.tbody.appendChild(tr);
         });
     }
 
     #initEvents() {
-        this.tbody.addEventListener("click", (event) => {
+        this.tbody.addEventListener("click", event => {
             if (event.target.classList.contains("btn-delete")) {
                 const tr = event.target.closest("tr");
                 if (tr && tr.dataset.isuId) {
                     this.onDeleteCallback(tr.dataset.isuId);
                 }
             }
-        });
+        }
+        );
     }
 }

@@ -1,4 +1,4 @@
-import {Student} from "../entity/Student";
+import {Student} from "../entity/Student.js";
 
 export class StorageRepository {
 
