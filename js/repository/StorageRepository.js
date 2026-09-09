@@ -55,4 +55,8 @@ export class StorageRepository {
             )
         );
     }
+
+    containsId(isuId) {
+        return this.readStudents().some(stud => Number(stud.isuId) === Number(isuId));
+    }
 }

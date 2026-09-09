@@ -1,18 +1,22 @@
 import {Student} from "../entity/Student.js";
+import {StorageRepository} from "../repository/StorageRepository.js";
 
 export class FormView {
 
     form;
     onSubmitCallback;
     isEditMode = false;
+    storageRepository;
 
     /**
      * @param {string} formSelector Селектор формы для работы с ней
+     * @param {StorageRepository} storageRepository Синглтон репозитория
      * @param {Function} onSubmitCallback (student: Student, isEditMode: boolean) => void
      */
-    constructor(formSelector, onSubmitCallback) {
+    constructor(formSelector, storageRepository, onSubmitCallback) {
         this.form = document.querySelector(formSelector);
         this.onSubmitCallback = onSubmitCallback;
+        this.storageRepository = storageRepository
 
         if (this.form) {
             this.#initEvents();
@@ -77,9 +81,15 @@ export class FormView {
             event.preventDefault();
 
             const student = this.getStudentFromForm();
-
-            if (this.onSubmitCallback) {
-                this.onSubmitCallback(student, this.isEditMode);
+            if (!this.storageRepository.containsId(student.isuId)) {
+                if (this.onSubmitCallback) {
+                    this.onSubmitCallback(student, this.isEditMode);
+                }
+            } else {
+                if (document.getElementById("isu")) {
+                    document.getElementById("isu").value = "";
+                }
+                    alert("Студент с данным ИСУ уже существует")
             }
         }
         );

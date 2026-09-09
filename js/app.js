@@ -5,38 +5,39 @@ import {ProfileView} from "./view/ProfileView.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     /** @type {StorageRepository} */
-    const repo = StorageRepository.getInstance();
+    const storageRepository = StorageRepository.getInstance();
     
     const urlParams = new URLSearchParams(window.location.search);
-    const targetId = urlParams.get("id");
+    const queryId = urlParams.get("id");
 
     // 1. Страница списка (index.html)
     if (document.getElementById("students-table")) {
         const tableView = new TableView("#table-body", isuId => {
             if (confirm("Вы уверены, что хотите удалить студента?")) {
-                repo.deleteStudent(isuId);
-                tableView.render(repo.readStudents());
+                storageRepository.deleteStudent(isuId);
+                tableView.render(storageRepository.readStudents());
             }
         }
         );
-        tableView.render(repo.readStudents());
+        tableView.render(storageRepository.readStudents());
     }
 
     // 2. Страница формы (form.html)
     if (document.getElementById("student-form")) {
-        const formView = new FormView("#student-form", (student, isEditMode) => {
+        const formView = new FormView("#student-form", storageRepository,
+            (student, isEditMode) => {
             if (isEditMode) {
-                repo.updateStudent(student);
+                storageRepository.updateStudent(student);
             } else {
-                repo.addStudent(student);
+                storageRepository.addStudent(student);
             }
             window.location.href = "index.html";
         }
         );
 
-        if (targetId) {
-            const student = repo.readStudents()
-                .find(stud => Number(stud.isuId) === Number(targetId));
+        if (queryId) {
+            const student = storageRepository.readStudents()
+                .find(stud => Number(stud.isuId) === Number(queryId));
             if (student) {
                 formView.fillForm(student);
             }
@@ -46,8 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Страница карточки студента (student.html)
     if (document.querySelector(".profile-card")) {
         const profileView = new ProfileView();
-        const student = repo.readStudents()
-            .find(stud => Number(stud.isuId) === Number(targetId));
+        const student = storageRepository.readStudents()
+            .find(stud => Number(stud.isuId) === Number(queryId));
         if (student) {
             profileView.render(student);
         }
